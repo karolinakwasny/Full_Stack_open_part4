@@ -1,18 +1,5 @@
 const blogsRouter = require('express').Router()
-// const Blog = require('../models/blog')
-const mongoose = require('mongoose')
-const config = require('../utils/config')
-
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-
-mongoose.connect(config.MONGODB_URI)
+const Blog = require('../models/blog')
 
 blogsRouter.get('/', (request, response) => {
 	Blog
