@@ -51,8 +51,8 @@ test('a valid blog can be added', async () => {
 	const blogsAtEnd = await helper.blogsInDb()
 	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
 
-	const titles = blogsAtEnd.map(blog => blog.title)
-	assert(titles.includes('a valid title'))
+	const urls = blogsAtEnd.map(blog => blog.url)
+	assert(urls.includes('www.avalidurl.com'))
 
 })
 
