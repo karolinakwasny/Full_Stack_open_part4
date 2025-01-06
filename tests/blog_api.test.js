@@ -56,7 +56,7 @@ test('a valid blog can be added', async () => {
 
 })
 
-test('blog without likes is not added', async () => {
+test('blog without likes is added', async () => {
 	const newBlog = {
 		title: 'a blog that nobody liked',
 		author: 'anonymous',
