@@ -31,7 +31,29 @@ test('unique identifier property of the blog posts is named id', async () => {
 	const response = await api.get('/api/blogs')
 
 	const allHaveId = response.body.every(blog => blog.hasOwnProperty("id"))
-	assert.ok(allHaveId)
+	assert(allHaveId)
+})
+
+test('a valid blog can be added', async () => {
+	const newBlog = {
+		title: 'a valid title',
+		author: 'a valid author',
+		url: 'www.avalidurl.com',
+		likes: 0,
+	}
+
+	await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+	const blogsAtEnd = await helper.blogsInDb()
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+	const titles = blogsAtEnd.map(blog => blog.title)
+	assert(titles.includes('a valid title'))
+
 })
 
 after(async () => {
