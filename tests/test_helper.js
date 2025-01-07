@@ -2,28 +2,28 @@ const Blog = require('../models/blog')
 
 const initialBlogs = [
   {
-	title: 'How to start coding',
-	author: 'John Doe',
-	url: 'www.myBlog.com/howtostartcoding',
-	likes: 7
+    title: 'How to start coding',
+    author: 'John Doe',
+    url: 'www.myBlog.com/howtostartcoding',
+    likes: 7
   },
   {
-	title: 'Growing up in Canada',
-	author: 'James Smith',
-	url: 'www.myBlog.com/growingupincanada',
-	likes: 1
+    title: 'Growing up in Canada',
+    author: 'James Smith',
+    url: 'www.myBlog.com/growingupincanada',
+    likes: 1
   },
   {
-	title: 'Traveling across the world',
-	author: 'Noah Brown',
-	url: 'www.myBlog.com/travelingacrosstheworld',
-	likes: 10
+    title: 'Traveling across the world',
+    author: 'Noah Brown',
+    url: 'www.myBlog.com/travelingacrosstheworld',
+    likes: 10
   },
   {
-	title: 'My culinary journey',
-	author: 'Henry Miller',
-	url: 'www.myBlog.com/myculinaryjourney',
-	likes: 5
+    title: 'My culinary journey',
+    author: 'Henry Miller',
+    url: 'www.myBlog.com/myculinaryjourney',
+    likes: 5
   }
 ]
 
