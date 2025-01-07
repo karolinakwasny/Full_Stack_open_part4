@@ -127,6 +127,34 @@ describe('when there are some blogs saved initially', () =>{
 			const titles = blogsAtEnd.map(blog => blog.title)
 			assert(!titles.includes(blogToDelete.title))
 		})
+		test('if id is not valid, no blog gets deleted', async () => {
+			const validNonexistingId = await helper.nonExistingId()
+
+			await api
+			.delete(`/api/blogs/${validNonexistingId}`)
+			.expect(404)
+
+			const blogsAtEnd = await helper.blogsInDb();
+			assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length);
+		})
+	})
+	describe('updating the information of an individual blog post', () => {
+		test('updating likes', async ()=> {
+			const blogsAtStart = await helper.blogsInDb()
+			const blogToUpdate = blogsAtStart[1]
+			const updatedBlog = { ...blogToUpdate, likes: 66}
+
+			await api
+			  .put(`/api/blogs/${blogToUpdate.id}`)
+			  .send(updatedBlog)
+			  .expect(200)
+			  .expect('Content-Type', /application\/json/)
+
+			const blogsAtEnd = await helper.blogsInDb()
+			assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+
+			assert.strictEqual(blogsAtEnd[1].likes, 66)
+		})
 	})
 })
 
