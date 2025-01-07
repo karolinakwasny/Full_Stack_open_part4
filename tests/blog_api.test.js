@@ -76,6 +76,38 @@ test('blog without likes is added', async () => {
 	assert(likes.includes(0))
   })
 
+test('blog without title is not added', async () => {
+	const newBlog = {
+		author: 'Tom Lopez',
+		url: 'www.myBlog.com/notitle',
+		likes: 9,
+	}
+
+	await api
+	  .post('/api/blogs')
+	  .send(newBlog)
+	  .expect(400)
+
+	const blogsAtEnd = await helper.blogsInDb()
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
+test('blog without url is not added', async () => {
+	const newBlog = {
+		title: 'No url',
+		author: 'John Moore',
+		likes: 0,
+	}
+
+	await api
+	  .post('/api/blogs')
+	  .send(newBlog)
+	  .expect(400)
+
+	const blogsAtEnd = await helper.blogsInDb()
+	assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+  })
+
 after(async () => {
   await mongoose.connection.close()
 })
