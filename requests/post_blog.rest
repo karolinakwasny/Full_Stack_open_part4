@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRibGFjayIsImlkIjoiNjdhYTExNzk2N2ViMzhjOTI4ZGMxMzExIiwiaWF0IjoxNzQyNTAxNDMzLCJleHAiOjE3NDI1MDUwMzN9.V06Jg1WX3cFXOXa321jl0OZ4aGll2nAQkLbvNKwz41U
 
 {
     "title": "DB's blog",
-    "author": "Dorian Black",
+    "author": "dblack",
     "url": "blog.com/dori",
     "likes": 30
 }
