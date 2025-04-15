@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRibGFjayIsImlkIjoiNjdhYTExNzk2N2ViMzhjOTI4ZGMxMzExIiwiaWF0IjoxNzQ0NzI5NTQwLCJleHAiOjE3NDQ3MzMxNDB9.a_3h3fHwJO1o2pten9T5hTdq5AEhAFbGyVmSrxE9-Hc
+Authorization: Bearer
 
 {
     "title": "Blog on tokens",
