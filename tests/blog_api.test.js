@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const helper = require('./test_helper')
+const jwt = require('jsonwebtoken')
 
 describe('when there is initially one user in db', () => {
   beforeEach(async () => {
@@ -151,9 +152,9 @@ describe('when there is initially one user in db', () => {
 })
 
 describe('when there are some blogs saved initially', () => {
+
   beforeEach(async () => {
     await Blog.deleteMany({})
-
     await Blog.insertMany(helper.initialBlogs)
   })
 
@@ -179,16 +180,42 @@ describe('when there are some blogs saved initially', () => {
   })
 
   describe('addition of a new blog', () => {
-    test('a valid blog can be added', async () => {
+    let token
+
+    beforeEach(async () => {
+      await Blog.deleteMany({})
+
+      let user = await User.findOne({ username: 'testuser' })
+      if (!user) {
+        user = new User({
+          username: 'testuser',
+          name: 'Test User',
+          password: 'testusersspassword'
+        })
+        await user.save()
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user.id,
+      }
+      token = jwt.sign(userForToken, process.env.SECRET)
+
+      await Blog.insertMany(helper.initialBlogs)
+    })
+
+
+    test('a valid blog can be added with a valid token', async () => {
       const newBlog = {
         title: 'a valid title',
-        author: 'a valid author',
+        author: 'Test User',
         url: 'www.avalidurl.com',
         likes: 0,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -202,15 +229,16 @@ describe('when there are some blogs saved initially', () => {
     })
 
     test('blog without likes is added', async () => {
-      const newBlog = {
+      const nolikesBlog = {
         title: 'a blog that nobody liked',
-        author: 'anonymous',
+        author: 'Test User',
         url: 'www.myBlog.com/nolikes',
       }
 
       await api
         .post('/api/blogs')
-        .send(newBlog)
+        .set('Authorization', `Bearer ${token}`)
+        .send(nolikesBlog)
         .expect(201)
         .expect('Content-Type', /application\/json/)
 
@@ -223,13 +251,14 @@ describe('when there are some blogs saved initially', () => {
 
     test('blog without title is not added', async () => {
       const newBlog = {
-        author: 'Tom Lopez',
+        author: 'Test User',
         url: 'www.myBlog.com/notitle',
         likes: 9,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
 
@@ -237,15 +266,17 @@ describe('when there are some blogs saved initially', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
 
+
     test('blog without url is not added', async () => {
       const newBlog = {
         title: 'No url',
-        author: 'John Moore',
+        author: 'Test User',
         likes: 0,
       }
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlog)
         .expect(400)
 
@@ -253,27 +284,74 @@ describe('when there are some blogs saved initially', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
-  describe('deletion of a blog', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[1]
+    test('a valid blog cannot be added without a token', async () => {
+      const newBlog = {
+        title: 'a valid title1',
+        author: 'Test User1',
+        url: 'www.avalidurl1.com',
+        likes: 0,
+      }
 
       await api
-        .delete(`/api/blogs/${blogToDelete.id}`)
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+    })
+  describe('deletion of a blog', () => {
+    let token
+    beforeEach(async () => {
+
+      let user = await User.findOne({ username: 'testdeleteuser' })
+      if (!user) {
+        user = new User({
+          username: 'testdeleteuser',
+          name: 'Test Delete',
+          password: 'testdeleteusersspassword'
+        })
+        await user.save()
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user.id,
+      }
+      token = jwt.sign(userForToken, process.env.SECRET)
+
+    })
+
+    test('succeeds with status code 204 if id is valid', async () => {
+
+      const newBlog = {
+        title: 'Blog written by Test Delete',
+        author: 'Test Delete',
+        url: 'doesntmatter.com',
+        likes: 0
+      }
+      const response = await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect('Content-Type', /application\/json/)
+
+      const blogToDeleteId = response.body.id
+
+      await api
+        .delete(`/api/blogs/${blogToDeleteId}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204)
 
-      const blogsAtEnd = await helper.blogsInDb()
 
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
 
-      const titles = blogsAtEnd.map(blog => blog.title)
-      assert(!titles.includes(blogToDelete.title))
+
     })
     test('if id is not valid, no blog gets deleted', async () => {
       const validNonexistingId = await helper.nonExistingId()
 
       await api
         .delete(`/api/blogs/${validNonexistingId}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()

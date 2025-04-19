@@ -19,7 +19,7 @@ blogsRouter.post('/', async (request, response) => {
 
   const user = request.user
   if (!user) {
-    return response.status(400).json({ error: 'Invalid or missing userId' });
+    return response.status(401).json({ error: 'Invalid or missing token' });
   }
 
   const blog = new Blog({
@@ -38,6 +38,8 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const user = request.user
+
+
   if (!user) {
     return response.status(401).json({ error: 'invalid or missing token' })
   }

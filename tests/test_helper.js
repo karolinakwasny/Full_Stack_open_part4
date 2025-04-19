@@ -10,7 +10,7 @@ const initialBlogs = [
   },
   {
     title: 'Growing up in Canada',
-    author: 'James Smith',
+    author: 'Test Delete',
     url: 'www.myBlog.com/growingupincanada',
     likes: 1
   },

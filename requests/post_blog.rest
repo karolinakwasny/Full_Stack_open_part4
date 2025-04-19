@@ -4,7 +4,6 @@ Authorization: Bearer
 
 {
     "title": "Blog on tokens",
-    "author": "dblack",
-    "url": "blog.com/token",
-    "likes": 0
+    "author": "dgreen",
+    "url": "blog.com/token"
 }
