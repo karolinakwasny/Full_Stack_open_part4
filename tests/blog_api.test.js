@@ -284,21 +284,21 @@ describe('when there are some blogs saved initially', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
-    test('a valid blog cannot be added without a token', async () => {
-      const newBlog = {
-        title: 'a valid title1',
-        author: 'Test User1',
-        url: 'www.avalidurl1.com',
-        likes: 0,
-      }
+  test('a valid blog cannot be added without a token', async () => {
+    const newBlog = {
+      title: 'a valid title1',
+      author: 'Test User1',
+      url: 'www.avalidurl1.com',
+      likes: 0,
+    }
 
-      await api
-        .post('/api/blogs')
-        .send(newBlog)
-        .expect(401)
-        .expect('Content-Type', /application\/json/)
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
 
-    })
+  })
   describe('deletion of a blog', () => {
     let token
     beforeEach(async () => {
